@@ -4,8 +4,8 @@ require 'rails_helper'
 
 describe 'user result show page', :vcr do
   before :each do
-    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com')
-    @user2 = User.create!(name: 'JaJa', email: 'JaJa@hotmail.com')
+    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
+    @user2 = User.create!(name: 'JaJa', email: 'JaJa@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
   
     @movie1 = SearchFacade.new({ type: 'top_rated' }).movies.first
     @movie2 = SearchFacade.new({ type: 'top_rated' }).movies[10]
@@ -60,7 +60,7 @@ describe 'user result show page', :vcr do
     it 'lists first 10 cast members' do
       visit user_movie_path(@user1, @new_movie1.id)
       within "#member_#{@new_movie1.cast.first[:cast_id]}" do
-        expect(page).to have_content("Marlon Brando as Vito Corleone")
+        expect(page).to have_content("Al Pacino as Michael Corleone")
       end
       expect(@new_movie1.cast.count).to eq(10)
     end

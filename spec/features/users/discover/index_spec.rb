@@ -4,8 +4,8 @@ require 'rails_helper'
 
 describe 'user discover page' do
   before :each do
-    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com')
-    @user2 = User.create!(name: 'JaJa', email: 'JaJa@hotmail.com')
+    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
+    @user2 = User.create!(name: 'JaJa', email: 'JaJa@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
 
     visit user_discover_index_path(@user1)
   end

@@ -9,10 +9,12 @@ RSpec.describe User, type: :model do
     it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
     it { should have_many :user_viewing_parties}
     it { should have_many(:viewing_parties).through(:user_viewing_parties)}
+    it { should validate_presence_of(:password_digest) }
+    it { should have_secure_password }
   end
 
   it 'can list hosted viewing parties' do
-    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com')
+    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
     @viewing_party1 = ViewingParty.create!(duration: 120, date: '12/12/2023', time: '2023-12-12 13:00:00 UTC', movie_id: 275)
     @user_viewing_party = UserViewingParty.create!(user_id: @user1.id, viewing_party_id: @viewing_party1.id, host: true)
 
@@ -21,13 +23,19 @@ RSpec.describe User, type: :model do
   end
 
   it 'can list invited viewing parties' do
-    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com')
-    @user2 = User.create!(name: 'Mary', email: 'Mary@hotmail.com')
+    @user1 = User.create!(name: 'JoJo', email: 'JoJo@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
+    @user2 = User.create!(name: 'Mary', email: 'Mary@hotmail.com', password: 'Password123', password_confirmation: 'Password123')
     @viewing_party1 = ViewingParty.create!(duration: 120, date: '12/12/2023', time: '2023-12-12 13:00:00 UTC', movie_id: 275)
     @user_viewing_party1 = UserViewingParty.create!(user_id: @user2.id, viewing_party_id: @viewing_party1.id, host: true)
     @user_viewing_party2 = UserViewingParty.create!(user_id: @user1.id, viewing_party_id: @viewing_party1.id)
 
     expect(@user1.hosted_viewing_parties).to eq([])
     expect(@user1.invited_viewing_parties).to eq([@user_viewing_party2])
+  end
+
+  it 'encrypts passowrd' do
+    user = User.create(name: 'Meg', email: 'meg@test.com', password: 'password123', password_confirmation: 'password123')
+    expect(user).to_not have_attribute(:password)
+    expect(user.password_digest).to_not eq('password123')
   end
 end
